@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import styles from './CityItem.module.css';
 import { Link } from 'react-router-dom';
+import { useCities } from '../context/CitiesContext';
 
 function formatDate(date) {
   return new Intl.DateTimeFormat('en', {
@@ -10,22 +11,16 @@ function formatDate(date) {
   }).format(new Date(date));
 }
 
-function flagemojiToPNG(flag) {
-  let countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
-    .map((char) => String.fromCharCode(char - 127397).toLowerCase())
-    .join('');
-  return (
-    <img src={`https://flagcdn.com/24x18/${countryCode}.png`} alt='flag' />
-  );
-}
-
 function CityItem({ city }) {
+  const { flagemojiToPNG, currentCity } = useCities();
   const { cityName, emoji, date, id, position } = city;
 
   return (
     <li>
       <Link
-        className={styles.cityItem}
+        className={`${styles.cityItem} ${
+          id === currentCity.id ? styles['cityItem--active'] : ''
+        }`}
         to={`${id}?lat=${position.lat}&lng=${position.lng}`}
       >
         <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
